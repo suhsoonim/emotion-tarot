@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>감정 타로 리딩 체험</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fef9f3;
+      color: #333;
+      text-align: center;
+      padding: 30px;
+    }
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      width: 140px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+    .card:active {
+      transform: scale(0.98);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .result {
+      display: none;
+      margin-top: 30px;
+    }
+    .result.active {
+      display: block;
+    }
+    .card-images {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card-name {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #222;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #555;
+    }
+    .summary-text {
+      margin-top: 20px;
+      font-size: 15px;
+      color: #444;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h2>💫 감정 타로 리딩 체험</h2>
+  <p>당신에게 가장 끌리는 이미지를 하나 골라보세요</p>
+
+  <div class="card-grid">
+    <div class="card" onclick="showReading('wave')">
+      <img src="https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/emotion_tarot_wave.jpg" alt="파도">
+    </div>
+    <div class="card" onclick="showReading('fire')">
+      <img src="https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/emotion_tarot_fire.jpg" alt="불꽃">
+    </div>
+    <div class="card" onclick="showReading('leaf')">
+      <img src="https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/emotion_tarot_leaf.jpg" alt="나뭇잎">
+    </div>
+    <div class="card" onclick="showReading('mirror')">
+      <img src="https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/emotion_tarot_mirror.jpg" alt="거울">
+    </div>
+    <div class="card" onclick="showReading('dark')">
+      <img src="https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/emotion_tarot_dark.jpg" alt="어둠">
+    </div>
+  </div>
+
+  <div id="result" class="result">
+    <h3>🔮 카드 리딩 결과</h3>
+    <p id="emotionText" style="font-weight: bold; margin-bottom: 20px;"></p>
+    <div class="card-images" id="readingCards"></div>
+    <div class="summary-text" id="summaryText"></div>
+  </div>
+
+  <script>
+    const emotionMessages = {
+      wave: "🌊 지금 당신의 마음은 출렁이는 감정에 휩쓸리고 있어요. 중심을 잡기 위한 내면의 작업이 필요해요.",
+      fire: "🔥 감정이 끓어오르고 있어요. 무언가를 행동으로 옮기고 싶은 욕구가 느껴져요.",
+      leaf: "🍃 고요한 흐름 속에서 마음의 숨결을 느껴보세요. 지금은 무리하지 않아도 괜찮아요.",
+      mirror: "🪞 감정의 원인을 들여다보는 시간이 필요해요. 지금은 나 자신을 깊이 바라보세요.",
+      dark: "🌑 말로 설명하기 어려운 감정이 움직이고 있어요. 그 감정을 외면하지 말고 바라봐 주세요."
+    };
+
+    const tarotDescriptions = {
+      Fool: "새로운 시작, 순수한 열정과 무모함 속의 가능성.",
+      Magician: "의지와 자원의 결합, 현실화의 힘.",
+      High_Priestess: "무의식과 직관, 감정의 깊은 세계.",
+      Empress: "풍요, 모성, 감정적 수용.",
+      Emperor: "통제, 안정, 감정에 질서를 부여함.",
+      Hierophant: "전통과 지혜, 감정의 구조화.",
+      Lovers: "감정적 연결, 사랑과 관계의 선택.",
+      Chariot: "의지와 통제 속의 감정적 균형.",
+      Strength: "부드러운 인내, 감정을 품는 용기.",
+      Hermit: "고독 속 통찰, 감정의 내면 탐색.",
+      Wheeloffortune: "감정의 흐름과 변화의 수용.",
+      Justice: "감정의 균형, 정의롭고 냉정한 판단.",
+      Hangedman: "감정적 희생, 시각의 전환.",
+      Death: "감정의 끝, 새로운 시작을 위한 정리.",
+      Temperance: "조화와 절제, 감정의 융합.",
+      Devil: "의존, 억눌림, 감정의 속박.",
+      Tower: "감정적 충격, 갑작스러운 깨달음.",
+      Star: "희망, 치유, 감정의 재생.",
+      Moon: "혼란, 감정의 불확실성.",
+      Sun: "기쁨, 생명력, 감정의 밝은 에너지.",
+      Judgement: "감정의 부활, 자아의 깨달음.",
+      World: "완성, 감정적 성숙과 통합."
+    };
+
+    const tarotDeck = Object.keys(tarotDescriptions).map(name => {
+      return {
+        name: name,
+        img: `https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/${name}.jpg`,
+        desc: tarotDescriptions[name]
+      };
+    });
+
+    function showReading(emotion) {
+      const emotionText = document.getElementById('emotionText');
+      emotionText.textContent = emotionMessages[emotion] || "";
+
+      const shuffled = tarotDeck.sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 3);
+
+      const cardBox = document.getElementById('readingCards');
+      cardBox.innerHTML = selected.map(card => `
+        <div class="card">
+          <img src="${card.img}" alt="${card.name}">
+          <div class="card-name">${card.name}</div>
+          <div class="card-desc">${card.desc}</div>
+        </div>
+      `).join("");
+
+      const summary = `이 조합은 당신의 감정이 '${selected[0].desc}'에서 시작되어, '${selected[1].desc}'을 거쳐 '${selected[2].desc}'로 향하고 있음을 보여줍니다.`;
+      document.getElementById('summaryText').textContent = summary;
+
+      document.getElementById('result').classList.add('active');
+    }
+  </script>
+</body>
+</html>
