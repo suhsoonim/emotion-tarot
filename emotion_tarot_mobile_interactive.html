@@ -40,13 +40,6 @@
       color: white;
     }
     .card-stack {
-       display: flex;
-       overflow-x: auto;
-       white-space: nowrap;
-        scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 20px;
-
       position: relative;
       width: 100%;
       height: 260px;
@@ -54,9 +47,6 @@
       margin: 0 auto 40px auto;
     }
     .card {
-      flex: 0 0 auto;
-      scroll-snap-align: center;
-      margin-right: 10px;
       position: absolute;
       top: 0;
       width: 150px;
@@ -97,68 +87,11 @@
       color: #444;
     }
   
-
 @media (max-width: 768px) {
-  body {
-    padding: 16px;
-  }
-
   .emotion-buttons {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
   }
-
-  .emotion-button {
-    font-size: 14px;
-    padding: 8px 14px;
-    min-width: 90px;
-  }
-
-  .shuffle-btn {
-    width: 100%;
-    max-width: 300px;
-    font-size: 18px;
-  }
-
-  .card-stack {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    height: auto;
-    padding-bottom: 10px;
-    scroll-snap-type: x mandatory;
-  }
-
-  .card {
-    position: relative !important;
-    flex: 0 0 auto;
-    display: inline-block;
-    margin: 0 8px;
-    scroll-snap-align: center;
-    width: 120px;
-    height: 190px;
-  }
-
-  .result-area {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-
-  .result-card {
-      width: 180px;
-      text-align: center;
-    }
-
-  .reading-box {
-    font-size: 13px;
-    padding: 10px;
-  }
-}
-
   .card-stack {
     height: auto;
     overflow-x: scroll;
@@ -170,12 +103,9 @@
     margin: 5px;
   }
   .result-area {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 /* 이모지 스타일 커스터마이징 */
@@ -227,68 +157,10 @@
 }
 
 
-
 @media (max-width: 768px) {
   body {
-    padding: 16px;
+    padding: 20px;
   }
-
-  .emotion-buttons {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .emotion-button {
-    font-size: 14px;
-    padding: 8px 14px;
-    min-width: 90px;
-  }
-
-  .shuffle-btn {
-    width: 100%;
-    max-width: 300px;
-    font-size: 18px;
-  }
-
-  .card-stack {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    height: auto;
-    padding-bottom: 10px;
-    scroll-snap-type: x mandatory;
-  }
-
-  .card {
-    position: relative !important;
-    flex: 0 0 auto;
-    display: inline-block;
-    margin: 0 8px;
-    scroll-snap-align: center;
-    width: 120px;
-    height: 190px;
-  }
-
-  .result-area {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-
-  .result-card {
-      width: 180px;
-      text-align: center;
-    }
-
-  .reading-box {
-    font-size: 13px;
-    padding: 10px;
-  }
-}
-
 
   .emotion-buttons {
     flex-wrap: wrap;
@@ -325,17 +197,14 @@
   }
 
   .result-area {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
+    flex-direction: column;
+    align-items: center;
+  }
 
   .result-card {
-      width: 180px;
-      text-align: center;
-    }
+    width: 80%;
+    max-width: 280px;
+  }
 }
 
 </style>
@@ -380,7 +249,6 @@
     selectedEmotion = emotion;
     document.querySelectorAll(".emotion-button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    document.getElementById("cardStack").scrollIntoView({ behavior: "smooth" });
     document.getElementById('resultTitle').innerText = `💬 [${selectedEmotion}] 감정과 카드에 따른 해석 결과`;
   }
 
@@ -525,11 +393,7 @@
       card.dataset.id = cardId;
       card.dataset.front = `https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/${cardId}.jpg`;
       card.src = "https://raw.githubusercontent.com/suhsoonim/emotion-tarot/main/images/back.jpg";
-      
-    const isMobile = window.innerWidth <= 768;
-    const spacing = isMobile ? 0 : 24;
-    card.style.left = `${i * spacing}px`;
-    
+      card.style.left = `${i * 40}px`;
       card.style.zIndex = i;
 
       card.onclick = () => {
